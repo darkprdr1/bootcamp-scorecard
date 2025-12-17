@@ -21,6 +21,17 @@ SHEETS_CREDENTIALS = None
 SHEET_ID = None
 
 try:
+    if "gcp_service_account" in st.secrets:
+        SHEETS_CREDENTIALS = st.secrets["gcp_service_account"]
+        SHEET_ID = st.secrets.get("sheet_id")
+        use_gsheets = True
+        
+        # 診斷訊息
+        print(f"DEBUG: gcp_service_account found: {SHEETS_CREDENTIALS is not None}")
+        print(f"DEBUG: sheet_id value: {SHEET_ID}")
+        print(f"DEBUG: All secrets keys: {list(st.secrets.keys())}")
+
+try:
     # 方法1: 直接讀取完整 dict
     if "gcp_service_account" in st.secrets:
         SHEETS_CREDENTIALS = st.secrets["gcp_service_account"]
