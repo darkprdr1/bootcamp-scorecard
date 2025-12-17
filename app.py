@@ -251,9 +251,9 @@ status = st.radio(
     "Select Status (選擇定位)",
     ["Ready Now", "Developing", "Re-assess"],
     format_func=lambda x: {
-        "Ready Now": "✅ Ready Now (可立即參加國際賽)",
-        "Developing": "🚀 Developing (需要 1-2 場磨合賽)",
-        "Re-assess": "⚠️ Re-assess (需要重新評估或特殊訓練)"
+        "Ready Now": "✅ Ready Now",
+        "Developing": "🚀 Developing",
+        "Re-assess": "⚠️ Re-assess"
     }[x]
 )
 
@@ -295,15 +295,15 @@ st.subheader("📋 Evaluation Summary (評估摘要)")
 summary_col1, summary_col2 = st.columns(2)
 
 with summary_col1:
-    st.metric("Average Score (平均評分)", f"{sum(scores_dict.values()) / 5:.1f} / 5.0")
-    st.metric("Strongest Area (最強項)", max(scores_dict, key=scores_dict.get))
-    st.metric("Needs Improvement (改進項)", min(scores_dict, key=scores_dict.get))
+    st.metric("Average Score", f"{sum(scores_dict.values()) / 5:.1f} / 5.0")
+    st.metric("Strongest Area", max(scores_dict, key=scores_dict.get))
+    st.metric("Needs Improvement", min(scores_dict, key=scores_dict.get))
 
 with summary_col2:
-    st.metric("Status (定位)", status)
-    st.metric("Risk Count (風險數)", len(risks))
+    st.metric("Status", status)
+    st.metric("Risk Count", len(risks))
     if risks:
-        st.write("**Identified Risks (識別風險):**")
+        st.write("**Identified Risks:**")
         for risk in risks:
             st.write(f"• {risk}")
 
