@@ -318,7 +318,7 @@ st.markdown("---")
 col_save1, col_save2 = st.columns(2)
 
 with col_save1:
-    if st.button("💾 Download as CSV (下載評估為 CSV)", use_container_width=True):
+    if st.button("💾 Download as CSV (下載評估為 CSV)", width='stretch'):
         data_row = {
             "Timestamp": datetime.now().isoformat(),
             "Athlete Name": athlete_name,
@@ -354,7 +354,7 @@ with col_save1:
         )
 
 with col_save2:
-    if use_gsheets and st.button("📤 Save to Google Sheets (儲存到 Google Sheets)", use_container_width=True):
+    if use_gsheets and st.button("📤 Save to Google Sheets (儲存到 Google Sheets)", width='stretch'):
         try:
             gc = get_gsheet_client()
             ws = gc.open_by_key(SHEET_ID).sheet1
