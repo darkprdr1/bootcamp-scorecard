@@ -21,17 +21,6 @@ SHEETS_CREDENTIALS = None
 SHEET_ID = None
 
 try:
-    if "gcp_service_account" in st.secrets:
-        SHEETS_CREDENTIALS = st.secrets["gcp_service_account"]
-        SHEET_ID = st.secrets.get("sheet_id")
-        use_gsheets = True
-        
-        # 診斷訊息
-        print(f"DEBUG: gcp_service_account found: {SHEETS_CREDENTIALS is not None}")
-        print(f"DEBUG: sheet_id value: {SHEET_ID}")
-        print(f"DEBUG: All secrets keys: {list(st.secrets.keys())}")
-
-try:
     # 方法1: 直接讀取完整 dict
     if "gcp_service_account" in st.secrets:
         SHEETS_CREDENTIALS = st.secrets["gcp_service_account"]
@@ -77,8 +66,15 @@ def get_gsheet_client():
     except Exception as e:
         return None
 
+
+
 # ==================== BOOT CAMP EVALUATION ====================
 st.title("🥋 Taekwondo Boot Camp Evaluation")
+# 臨時調試訊息（完成後可刪除）
+st.write(f"🔍 **DEBUG - SHEET_ID:** `{SHEET_ID}`")
+st.write(f"🔍 **DEBUG - use_gsheets:** `{use_gsheets}`")
+st.write(f"🔍 **DEBUG - Secrets keys:** `{list(st.secrets.keys()) if hasattr(st, 'secrets') else 'No secrets'}`")
+
 st.markdown("---")
 
 col1, col2, col3 = st.columns(3)
