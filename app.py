@@ -16,22 +16,42 @@ st.set_page_config(
 )
 
 # ==================== GOOGLE SHEETS CONFIG ====================
+use_gsheets = False
+SHEETS_CREDENTIALS = None
+SHEET_ID = None
+
 try:
-    SHEETS_CREDENTIALS = st.secrets["gcp_service_account"]
-    SHEET_ID = st.secrets["sheet_id"]
-    use_gsheets = True
-except:
-    st.warning("⚠️ Google Sheets not configured. Data will be saved locally. (Google Sheets 未設定，數據將儲存在本機)")
+    # 方法1: 直接讀取完整 dict
+    if "gcp_service_account" in st.secrets:
+        SHEETS_CREDENTIALS = st.secrets["gcp_service_account"]
+        SHEET_ID = st.secrets.get("sheet_id")
+        use_gsheets = True
+except Exception as e:
+    st.warning(f"⚠️ Google Sheets not configured. Data will be saved locally.")
     use_gsheets = False
 
 def get_gsheet_client():
+    """連接 Google Sheets 客戶端"""
     try:
-        creds = Credentials.from_service_account_info(
-            SHEETS_CREDENTIALS,
-            scopes=['https://www.googleapis.com/auth/spreadsheets']
-        )
+        if SHEETS_CREDENTIALS is None:
+            return None
+        
+        # 確保 SHEETS_CREDENTIALS 是字典
+        if isinstance(SHEETS_CREDENTIALS, dict):
+            creds = Credentials.from_service_account_info(
+                SHEETS_CREDENTIALS,
+                scopes=['https://www.googleapis.com/auth/spreadsheets']
+            )
+        else:
+            # 如果是 JSON 字符串，先解析
+            creds_dict = json.loads(SHEETS_CREDENTIALS) if isinstance(SHEETS_CREDENTIALS, str) else SHEETS_CREDENTIALS
+            creds = Credentials.from_service_account_info(
+                creds_dict,
+                scopes=['https://www.googleapis.com/auth/spreadsheets']
+            )
+        
         return gspread.authorize(creds)
-    except:
+    except Exception as e:
         return None
 
 # ==================== BOOT CAMP EVALUATION ====================
@@ -200,7 +220,7 @@ with st.expander("5️⃣ Attendance & Commitment (出席與投入)"):
 st.markdown("---")
 
 # ==================== RISK FLAGS ====================
-st.subheader("⚠️ Risk Flags")
+st.subheader("⚠️ Risk Flags (風險標誌)")
 risk_cols = st.columns(3)
 risks = []
 
@@ -226,14 +246,14 @@ with risk_cols[2]:
 st.markdown("---")
 
 # ==================== ATHLETE STATUS ====================
-st.subheader("🎯 Athlete Status ")
+st.subheader("🎯 Athlete Status (選手定位)")
 status = st.radio(
-    "Select Status",
+    "Select Status (選擇定位)",
     ["Ready Now", "Developing", "Re-assess"],
     format_func=lambda x: {
-        "Ready Now": "✅ Ready Now",
-        "Developing": "🚀 Developing",
-        "Re-assess": "⚠️ Re-assess"
+        "Ready Now": "✅ Ready Now (可立即參加國際賽)",
+        "Developing": "🚀 Developing (需要 1-2 場磨合賽)",
+        "Re-assess": "⚠️ Re-assess (需要重新評估或特殊訓練)"
     }[x]
 )
 
@@ -266,11 +286,11 @@ fig.update_layout(
     title=f"Boot Camp Evaluation — {athlete_name or 'Athlete'} ({bootcamp_date})"
 )
 
-st.plotly_chart(fig, width='stretch')
+st.plotly_chart(fig, use_container_width=True)
 
 # ==================== SUMMARY CARD ====================
 st.markdown("---")
-st.subheader("📋 Evaluation Summary")
+st.subheader("📋 Evaluation Summary (評估摘要)")
 
 summary_col1, summary_col2 = st.columns(2)
 
@@ -290,77 +310,84 @@ with summary_col2:
 st.markdown("---")
 
 # ==================== SAVE OPTIONS ====================
+st.subheader("💾 Save & Export Options (保存與匯出選項)")
 col_save1, col_save2 = st.columns(2)
 
 with col_save1:
-    if st.button("💾 Download as CSV (下載評估為 CSV)", width='stretch'):
-        data_row = {
-            "Timestamp": datetime.now().isoformat(),
-            "Athlete Name": athlete_name,
-            "Gender": gender,
-            "Weight Class": weight_class,
-            "Age Group": age_group,
-            "Boot Camp Name": bootcamp_name,
-            "Boot Camp Date": str(bootcamp_date),
-            "Technical & Tactical": technical_score,
-            "Physical Capacity": physical_score,
-            "Competition Behavior": behavior_score,
-            "Competition Readiness": readiness_score,
-            "Attendance & Commitment": attendance_score,
-            "Status": status,
-            "Risks": ", ".join(risks),
-            "Technical Note": technical_note,
-            "Physical Note": physical_note,
-            "Behavior Note": behavior_note,
-            "Readiness Note": readiness_note,
-            "Attendance Note": attendance_note,
-            "Top Achievements": f"{top1} | {top2} | {top3}",
-            "Improvements": f"{improve1} | {improve2} | {improve3}",
-            "Next Actions": f"{action1} | {action2} | {action3}"
-        }
-        
-        df = pd.DataFrame([data_row])
-        csv = df.to_csv(index=False)
-        st.download_button(
-            label="📥 Click to Download CSV (點此下載)",
-            data=csv,
-            file_name=f"bootcamp_{athlete_name}_{bootcamp_date}.csv",
-            mime="text/csv"
-        )
+    data_row = {
+        "Timestamp": datetime.now().isoformat(),
+        "Athlete Name": athlete_name,
+        "Gender": gender,
+        "Weight Class": weight_class,
+        "Age Group": age_group,
+        "Boot Camp Name": bootcamp_name,
+        "Boot Camp Date": str(bootcamp_date),
+        "Technical & Tactical": technical_score,
+        "Physical Capacity": physical_score,
+        "Competition Behavior": behavior_score,
+        "Competition Readiness": readiness_score,
+        "Attendance & Commitment": attendance_score,
+        "Status": status,
+        "Risks": ", ".join(risks),
+        "Technical Note": technical_note,
+        "Physical Note": physical_note,
+        "Behavior Note": behavior_note,
+        "Readiness Note": readiness_note,
+        "Attendance Note": attendance_note,
+        "Top Achievements": f"{top1} | {top2} | {top3}",
+        "Improvements": f"{improve1} | {improve2} | {improve3}",
+        "Next Actions": f"{action1} | {action2} | {action3}"
+    }
+    
+    df = pd.DataFrame([data_row])
+    csv = df.to_csv(index=False)
+    st.download_button(
+        label="📥 Download as CSV",
+        data=csv,
+        file_name=f"bootcamp_{athlete_name}_{bootcamp_date}.csv",
+        mime="text/csv",
+        use_container_width=True
+    )
 
 with col_save2:
-    if use_gsheets and st.button("📤 Save to Google Sheets (儲存到 Google Sheets)", width='stretch'):
-        try:
-            gc = get_gsheet_client()
-            ws = gc.open_by_key(SHEET_ID).sheet1
-            
-            row = [
-                datetime.now().isoformat(),
-                "Boot Camp",
-                athlete_name,
-                gender,
-                weight_class,
-                age_group,
-                bootcamp_name,
-                str(bootcamp_date),
-                technical_score,
-                physical_score,
-                behavior_score,
-                readiness_score,
-                attendance_score,
-                status,
-                ", ".join(risks),
-                technical_note,
-                physical_note,
-                behavior_note,
-                readiness_note,
-                attendance_note,
-                f"{top1} | {top2} | {top3}",
-                f"{improve1} | {improve2} | {improve3}",
-                f"{action1} | {action2} | {action3}"
-            ]
-            
-            ws.append_row(row)
-            st.success("✅ Saved to Google Sheets! (已儲存到 Google Sheets!)")
-        except Exception as e:
-            st.error(f"❌ Save failed: {e} (儲存失敗)")
+    if use_gsheets:
+        if st.button("📤 Save to Google Sheets", use_container_width=True):
+            try:
+                gc = get_gsheet_client()
+                if gc is None:
+                    st.error("❌ Failed to connect to Google Sheets. Please check your secrets configuration.")
+                else:
+                    ws = gc.open_by_key(SHEET_ID).sheet1
+                    
+                    row = [
+                        datetime.now().isoformat(),
+                        "Boot Camp",
+                        athlete_name,
+                        gender,
+                        weight_class,
+                        age_group,
+                        bootcamp_name,
+                        str(bootcamp_date),
+                        technical_score,
+                        physical_score,
+                        behavior_score,
+                        readiness_score,
+                        attendance_score,
+                        status,
+                        ", ".join(risks),
+                        technical_note,
+                        physical_note,
+                        behavior_note,
+                        readiness_note,
+                        attendance_note,
+                        f"{top1} | {top2} | {top3}",
+                        f"{improve1} | {improve2} | {improve3}",
+                        f"{action1} | {action2} | {action3}"
+                    ]
+                    
+                    ws.append_row(row)
+                    st.success("✅ Saved to Google Sheets! (已儲存到 Google Sheets!)")
+            except Exception as e:
+                st.error(f"❌ Save failed: {e} (儲存失敗)")
+    else:
+        st.info("ℹ️ Google Sheets not configured. Set up your secrets to enable this feature.")
