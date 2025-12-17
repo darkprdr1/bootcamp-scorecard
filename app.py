@@ -376,10 +376,7 @@ with col_save2:
                         physical_note,
                         behavior_note,
                         readiness_note,
-                        attendance_note,
-                        f"{top1} | {top2} | {top3}",
-                        f"{improve1} | {improve2} | {improve3}",
-                        f"{action1} | {action2} | {action3}"
+                        attendance_note,                      
                     ]
                     
                     ws.append_row(row)
