@@ -26,9 +26,21 @@ try:
         SHEETS_CREDENTIALS = st.secrets["gcp_service_account"]
         SHEET_ID = st.secrets.get("sheet_id")
         use_gsheets = True
+        
+        # 診斷訊息
+        print(f"DEBUG: gcp_service_account found: {SHEETS_CREDENTIALS is not None}")
+        print(f"DEBUG: sheet_id value: {SHEET_ID}")
+        print(f"DEBUG: All secrets keys: {list(st.secrets.keys())}")
+    else:
+        print("DEBUG: gcp_service_account not found in secrets")
+        SHEET_ID = None
+        use_gsheets = False
 except Exception as e:
     st.warning(f"⚠️ Google Sheets not configured. Data will be saved locally.")
+    print(f"DEBUG: Exception: {e}")
     use_gsheets = False
+    SHEET_ID = None
+
 
 def get_gsheet_client():
     """連接 Google Sheets 客戶端"""
