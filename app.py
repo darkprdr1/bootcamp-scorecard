@@ -347,41 +347,82 @@ with col_save1:
     )
 
 with col_save2:
-    if use_gsheets:
+    if use_gsheets and SHEET_ID:
         if st.button("📤 Save to Google Sheets", use_container_width=True):
             try:
+                # 調試 1：打印配置
+                st.write("🔍 **DEBUG INFO:**")
+                st.write(f"✓ SHEET_ID: `{SHEET_ID[:30]}...`")
+                st.write(f"✓ use_gsheets: `{use_gsheets}`")
+                st.write(f"✓ Credentials loaded: `{SHEETS_CREDENTIALS is not None}`")
+                
+                if SHEETS_CREDENTIALS:
+                    st.write(f"✓ Service Account Email: `{SHEETS_CREDENTIALS.get('client_email')}`")
+                
+                # 調試 2：驗證認證
+                st.write("🔗 **Authenticating...**")
                 gc = get_gsheet_client()
+                
                 if gc is None:
-                    st.error("❌ Failed to connect to Google Sheets. Please check your secrets configuration.")
+                    st.error("❌ Failed to create client. Check credentials.")
                 else:
-                    ws = gc.open_by_key(SHEET_ID).sheet1
+                    st.write("✓ Client created successfully")
                     
-                    row = [
-                        datetime.now().isoformat(),
-                        "Boot Camp",
-                        athlete_name,
-                        gender,
-                        weight_class,
-                        age_group,
-                        bootcamp_name,
-                        str(bootcamp_date),
-                        technical_score,
-                        physical_score,
-                        behavior_score,
-                        readiness_score,
-                        attendance_score,
-                        status,
-                        ", ".join(risks),
-                        technical_note,
-                        physical_note,
-                        behavior_note,
-                        readiness_note,
-                        attendance_note,                      
-                    ]
-                    
-                    ws.append_row(row)
-                    st.success("✅ Saved to Google Sheets! (已儲存到 Google Sheets!)")
+                    # 調試 3：嘗試打開工作表
+                    st.write("📂 **Opening Spreadsheet...**")
+                    try:
+                        spreadsheet = gc.open_by_key(SHEET_ID)
+                        st.write(f"✓ Spreadsheet opened: `{spreadsheet.title}`")
+                        
+                        ws = spreadsheet.sheet1
+                        st.write(f"✓ Worksheet: `{ws.title}`")
+                        
+                        # 調試 4：建立數據行
+                        st.write("📝 **Preparing data...**")
+                        row = [
+                            datetime.now().isoformat(),
+                            "Boot Camp",
+                            athlete_name or "N/A",
+                            gender or "N/A",
+                            weight_class or "N/A",
+                            age_group or "N/A",
+                            bootcamp_name or "N/A",
+                            str(bootcamp_date),
+                            technical_score,
+                            physical_score,
+                            behavior_score,
+                            readiness_score,
+                            attendance_score,
+                            status,
+                            ", ".join(risks) if risks else "None",
+                            technical_note or "",
+                            physical_note or "",
+                            behavior_note or "",
+                            readiness_note or "",
+                            attendance_note or "",
+                            f"{top1 or 'N/A'} | {top2 or 'N/A'} | {top3 or 'N/A'}",
+                            f"{improve1 or 'N/A'} | {improve2 or 'N/A'} | {improve3 or 'N/A'}",
+                            f"{action1 or 'N/A'} | {action2 or 'N/A'} | {action3 or 'N/A'}"
+                        ]
+                        st.write(f"✓ Row prepared with {len(row)} fields")
+                        
+                        # 調試 5：嘗試寫入
+                        st.write("✍️ **Writing to sheet...**")
+                        ws.append_row(row)
+                        st.success("✅ Saved to Google Sheets! (已儲存到 Google Sheets!)")
+                        
+                    except Exception as e:
+                        st.error(f"❌ Spreadsheet error: {type(e).__name__}")
+                        st.error(f"📌 Error message: {str(e)}")
+                        import traceback
+                        st.write("**Full traceback:**")
+                        st.code(traceback.format_exc(), language="python")
+                        
             except Exception as e:
-                st.error(f"❌ Save failed: {e} (儲存失敗)")
+                st.error(f"❌ General error: {type(e).__name__}")
+                st.error(f"📌 Message: {str(e)}")
+                import traceback
+                st.code(traceback.format_exc(), language="python")
     else:
-        st.info("ℹ️ Google Sheets not configured. Set up your secrets to enable this feature.")
+        st.info(f"ℹ️ Config status - use_gsheets: {use_gsheets}, SHEET_ID: {SHEET_ID is not None}")
+
