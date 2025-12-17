@@ -200,7 +200,7 @@ with st.expander("5️⃣ Attendance & Commitment (出席與投入)"):
 st.markdown("---")
 
 # ==================== RISK FLAGS ====================
-st.subheader("⚠️ Risk Flags (風險標誌)")
+st.subheader("⚠️ Risk Flags")
 risk_cols = st.columns(3)
 risks = []
 
@@ -226,21 +226,21 @@ with risk_cols[2]:
 st.markdown("---")
 
 # ==================== ATHLETE STATUS ====================
-st.subheader("🎯 Athlete Status (選手定位)")
+st.subheader("🎯 Athlete Status ")
 status = st.radio(
-    "Select Status (選擇定位)",
+    "Select Status",
     ["Ready Now", "Developing", "Re-assess"],
     format_func=lambda x: {
-        "Ready Now": "✅ Ready Now ",
-        "Developing": "🚀 Developing ",
-        "Re-assess": "⚠️ Re-assess "
+        "Ready Now": "✅ Ready Now",
+        "Developing": "🚀 Developing",
+        "Re-assess": "⚠️ Re-assess"
     }[x]
 )
 
 st.markdown("---")
 
 # ==================== FIVE-DIMENSION RADAR CHART ====================
-st.subheader("📊 Five-Dimension Radar Chart ")
+st.subheader("📊 Five-Dimension Radar Chart")
 
 scores_dict = {
     "Technical & Tactical": technical_score,
@@ -270,7 +270,7 @@ st.plotly_chart(fig, width='stretch')
 
 # ==================== SUMMARY CARD ====================
 st.markdown("---")
-st.subheader("📋 Evaluation Summary (評估摘要)")
+st.subheader("📋 Evaluation Summary")
 
 summary_col1, summary_col2 = st.columns(2)
 
