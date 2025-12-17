@@ -1,4 +1,4 @@
-import streamlit as st
+mport streamlit as st
 import pandas as pd
 import plotly.graph_objects as go
 from datetime import datetime
@@ -35,7 +35,7 @@ def get_gsheet_client():
         return None
 
 # ==================== BOOT CAMP EVALUATION ====================
-st.title("🏋️ Boot Camp Weekly Evaluation (每週評估)")
+st.title("🥋 Taekwondo Boot Camp Weekly Evaluation (跆拳道集訓每週評估)")
 st.markdown("---")
 
 col1, col2, col3 = st.columns(3)
@@ -231,9 +231,9 @@ status = st.radio(
     "Select Status (選擇定位)",
     ["Ready Now", "Developing", "Re-assess"],
     format_func=lambda x: {
-        "Ready Now": "✅ Ready Now (可立即參加國際賽)",
-        "Developing": "🚀 Developing (需要 1-2 場磨合賽)",
-        "Re-assess": "⚠️ Re-assess (需要重新評估或特殊訓練)"
+        "Ready Now": "✅ Ready Now ",
+        "Developing": "🚀 Developing ",
+        "Re-assess": "⚠️ Re-assess "
     }[x]
 )
 
@@ -246,26 +246,26 @@ col_top = st.columns(3)
 
 with col_top[0]:
     st.write("**Top 3 Achievements (收穫)**")
-    top1 = st.text_input("Achievement 1 (收穫 1)", key="top1")
-    top2 = st.text_input("Achievement 2 (收穫 2)", key="top2")
-    top3 = st.text_input("Achievement 3 (收穫 3)", key="top3")
+    top1 = st.text_input("Achievement 1 ", key="top1")
+    top2 = st.text_input("Achievement 2 ", key="top2")
+    top3 = st.text_input("Achievement 3 ", key="top3")
 
 with col_top[1]:
-    st.write("**Key Improvement Areas (改進項目)**")
-    improve1 = st.text_input("Improvement 1 (改進項 1)", key="improve1")
-    improve2 = st.text_input("Improvement 2 (改進項 2)", key="improve2")
-    improve3 = st.text_input("Improvement 3 (改進項 3)", key="improve3")
+    st.write("**Key Improvement Areas **")
+    improve1 = st.text_input("Improvement 1 ", key="improve1")
+    improve2 = st.text_input("Improvement 2 ", key="improve2")
+    improve3 = st.text_input("Improvement 3 ", key="improve3")
 
 with col_top[2]:
-    st.write("**Next Steps (2-4 weeks) (下一步行動)**")
-    action1 = st.text_input("Action 1 (行動 1)", key="action1")
-    action2 = st.text_input("Action 2 (行動 2)", key="action2")
-    action3 = st.text_input("Action 3 (行動 3)", key="action3")
+    st.write("**Next Steps (4-8 weeksk **")
+    action1 = st.text_input("Action 1 ", key="action1")
+    action2 = st.text_input("Action 2 ", key="action2")
+    action3 = st.text_input("Action 3 ", key="action3")
 
 st.markdown("---")
 
 # ==================== FIVE-DIMENSION RADAR CHART ====================
-st.subheader("📊 Five-Dimension Radar Chart (五維雷達圖)")
+st.subheader("📊 Five-Dimension Radar Chart ")
 
 scores_dict = {
     "Technical & Tactical": technical_score,
@@ -291,7 +291,7 @@ fig.update_layout(
     title=f"Boot Camp Evaluation — {athlete_name or 'Athlete'} ({bootcamp_date})"
 )
 
-st.plotly_chart(fig, use_container_width=True)
+st.plotly_chart(fig, width='stretch')
 
 # ==================== SUMMARY CARD ====================
 st.markdown("---")
