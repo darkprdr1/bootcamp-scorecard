@@ -55,7 +55,7 @@ def get_gsheet_client():
         return None
 
 # ==================== BOOT CAMP EVALUATION ====================
-st.title("🥋 Taekwondo Boot Camp Weekly Evaluation (跆拳道集訓每週評估)")
+st.title("🥋 Taekwondo Boot Camp Evaluation")
 st.markdown("---")
 
 col1, col2, col3 = st.columns(3)
@@ -333,10 +333,7 @@ with col_save1:
         "Physical Note": physical_note,
         "Behavior Note": behavior_note,
         "Readiness Note": readiness_note,
-        "Attendance Note": attendance_note,
-        "Top Achievements": f"{top1} | {top2} | {top3}",
-        "Improvements": f"{improve1} | {improve2} | {improve3}",
-        "Next Actions": f"{action1} | {action2} | {action3}"
+        "Attendance Note": attendance_note,       
     }
     
     df = pd.DataFrame([data_row])
