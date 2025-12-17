@@ -183,31 +183,29 @@ if mode == "Boot Camp 快速評估":
     
     st.markdown("---")
     
-    # ==================== RISK FLAGS ====================
+     # ==================== RISK FLAGS ====================
     st.subheader("⚠️ 風險標誌")
     risk_cols = st.columns(3)
     risks = []
     
-    with risk_cols:
+    with risk_cols[0]:
         if st.checkbox("傷病風險"):
             risks.append("傷病風險")
         if st.checkbox("疲勞過度"):
             risks.append("疲勞過度")
     
-    with risk_cols:
+    with risk_cols[1]:
         if st.checkbox("表現波動"):
             risks.append("表現波動")
         if st.checkbox("決策能力差"):
             risks.append("決策能力差")
     
-    with risk_cols:
+    with risk_cols[2]:
         if st.checkbox("對手適應差"):
             risks.append("對手適應差")
         other_risk = st.text_input("其他風險", placeholder="如有其他風險，請輸入", key="other_risk")
         if other_risk:
             risks.append(other_risk)
-    
-    st.markdown("---")
     
     # ==================== ATHLETE STATUS ====================
     st.subheader("🎯 選手定位")
