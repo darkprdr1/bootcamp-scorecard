@@ -42,12 +42,33 @@ col1, col2, col3 = st.columns(3)
 
 with col1:
     athlete_name = st.text_input("Athlete Name (選手名字)", placeholder="e.g., Li Xiaoming")
+
 with col2:
-    weight_class = st.selectbox("Weight Class (量級)", 
-        ["-48kg", "-55kg", "-63kg", "-70kg", "+70kg", "Other"])
-with col3:
+    weight_categories = {
+        "Senior (成人)": {
+            "Male (男)": ["-54 kg", "-58 kg", "-63 kg", "-68 kg", "-74 kg", "-80 kg", "-87 kg", "+87 kg"],
+            "Female (女)": ["-46 kg", "-49 kg", "-53 kg", "-57 kg", "-62 kg", "-67 kg", "-73 kg", "+73 kg"]
+        },
+        "Junior (青少年 15-17歲)": {
+            "Male (男)": ["-45 kg", "-48 kg", "-51 kg", "-55 kg", "-59 kg", "-63 kg", "-68 kg", "-73 kg", "-78 kg", "+78 kg"],
+            "Female (女)": ["-42 kg", "-44 kg", "-46 kg", "-49 kg", "-52 kg", "-55 kg", "-59 kg", "-63 kg", "-68 kg", "+68 kg"]
+        },
+        "Cadet (少年 12-14歲)": {
+            "Male (男)": ["-33 kg", "-37 kg", "-41 kg", "-45 kg", "-49 kg", "-53 kg", "-57 kg", "-61 kg", "-65 kg", "+65 kg"],
+            "Female (女)": ["-29 kg", "-33 kg", "-37 kg", "-41 kg", "-44 kg", "-47 kg", "-51 kg", "-55 kg", "-59 kg", "+59 kg"]
+        }
+    }
+    
     age_group = st.selectbox("Age Group (年齡組)", 
-        ["U-21", "Senior", "Master"])
+        ["Senior (成人)", "Junior (青少年 15-17歲)", "Cadet (少年 12-14歲)"])
+    
+    gender = st.radio("Gender (性別)", ["Male (男)", "Female (女)"], horizontal=True)
+    
+    weight_class = st.selectbox("Weight Class (量級)", 
+        weight_categories[age_group][gender])
+
+with col3:
+    pass
 
 col4, col5 = st.columns(2)
 with col4:
@@ -301,6 +322,7 @@ with col_save1:
         data_row = {
             "Timestamp": datetime.now().isoformat(),
             "Athlete Name": athlete_name,
+            "Gender": gender,
             "Weight Class": weight_class,
             "Age Group": age_group,
             "Boot Camp Name": bootcamp_name,
@@ -341,6 +363,7 @@ with col_save2:
                 datetime.now().isoformat(),
                 "Boot Camp",
                 athlete_name,
+                gender,
                 weight_class,
                 age_group,
                 bootcamp_name,
