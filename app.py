@@ -239,31 +239,6 @@ status = st.radio(
 
 st.markdown("---")
 
-# ==================== KEY TAKEAWAYS ====================
-st.subheader("📝 Boot Camp Key Outcomes (重點成果)")
-
-col_top = st.columns(3)
-
-with col_top[0]:
-    st.write("**Top 3 Achievements**")
-    top1 = st.text_input("Achievement 1 ", key="top1")
-    top2 = st.text_input("Achievement 2 ", key="top2")
-    top3 = st.text_input("Achievement 3 ", key="top3")
-
-with col_top[1]:
-    st.write("**Key Improvement Areas**")
-    improve1 = st.text_input("Improvement 1 ", key="improve1")
-    improve2 = st.text_input("Improvement 2 ", key="improve2")
-    improve3 = st.text_input("Improvement 3 ", key="improve3")
-
-with col_top[2]:
-    st.write("**Next Steps (4-8 weeksk)**")
-    action1 = st.text_input("Action 1 ", key="action1")
-    action2 = st.text_input("Action 2 ", key="action2")
-    action3 = st.text_input("Action 3 ", key="action3")
-
-st.markdown("---")
-
 # ==================== FIVE-DIMENSION RADAR CHART ====================
 st.subheader("📊 Five-Dimension Radar Chart ")
 
